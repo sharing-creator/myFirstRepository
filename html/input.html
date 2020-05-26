@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>タイムカード</title>
+		<link rel="stylesheet" href="../css/input.css">
+	</head>
+	<body>
+		<h1 id=title>
+			タイムカード
+		</h1>
+
+		<div class=info>
+			<span id="clock_date"></span>
+			<span id="clock_time"></span>
+		</div>
+
+		<div class=info>
+			<form>
+				id : 
+				<input type="text" id="inpid">
+				<br>
+				パスワード : 
+				<input type="text" id="inppw">
+				<br>
+				<input id="start" type="button" value="出勤" onclick="input(0)">
+				<input id="end" type="button" value="退勤" onclick="input(1)">
+			</form>
+		</div>
+
+		<div class="info">
+			<input id="message" type="text" value="メッセージ" readonly="readonly">
+		</div>
+		<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+		<script src="../javascript/clock.js"></script>
+		<script src="../javascript/input_idpw.js"></script>
+	</body>
+</html>
