@@ -19,6 +19,7 @@ import sys
 import io
 import urllib.parse
 import codecs
+import MySQLdb
 cgitb.enable()
 
 data = sys.stdin.readline()#leadline()?

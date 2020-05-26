@@ -55,3 +55,10 @@ function input(workbutton){
 	}
 
 }
+
+/*function admininput(){
+	user = window.prompt("ƒ†[ƒU[–¼‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢");
+	if(){
+		
+	}
+}*/
