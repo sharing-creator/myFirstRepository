@@ -4,8 +4,11 @@ var mes = document.getElementById("message");
 
 var response = {};
 let request = {};
+let mode;
 
 function input(workbutton){
+
+	mode = 0;	//始業と終業関連のボタンの処理を指定
 
 	//2つの入力ボックスがどちらも入力されていたら
 	if(!id.value==""&&!pw.value==""){
@@ -18,7 +21,8 @@ function input(workbutton){
 		var h = now.getHours();
 		var mi = now.getMinutes();
 
-		request = {	"id" : id.value,
+		request = {	"mode" : mode,
+				"id" : id.value,
 				"pw" : pw.value,
 				"year" : y,
 				"month" : mo,
@@ -27,15 +31,16 @@ function input(workbutton){
 				"minute" : mi,
 				"button" : workbutton}
 
-		$(function(){
+		$(function ajaxpy(){
 
 			$.ajax({
 				type		: "POST",
-				url		: "../cgi-bin/workstartend2.py",
+				url		: "../cgi-bin/start_end_cgi.py",
 				data		: JSON.stringify(request),
 				contentType	: "application/json",
 				success		: function(data) {
 					response = data;
+					console.log("response : " + response);
 					mes.value = response["res"];
 				},
 				error		: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -56,9 +61,14 @@ function input(workbutton){
 
 }
 
-/*function admininput(){
+function admininput(){
+
+	mode = 1;
+
 	user = window.prompt("ユーザー名を入力してください");
-	if(){
-		
+	if(user == 'admin'){
+		location.href="manage.html"
+	}else{
+		"ID、またはパスワードが違います"
 	}
-}*/
+}

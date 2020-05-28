@@ -1,6 +1,10 @@
 #title{
-	text-align: center
+	text-align: center;
 }
 .info{
-	text-align: center
+	text-align: center;
+}
+#admin{
+	position: relative;
+	top: -80px;
 }
