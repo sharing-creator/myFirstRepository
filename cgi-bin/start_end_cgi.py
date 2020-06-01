@@ -9,7 +9,7 @@
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
 
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 import cgi
 import cgitb
@@ -27,23 +27,25 @@ cgitb.enable()
 data = sys.stdin.readline()#leadline()?
 params = json.loads(data)
 
-try:
+def query():
+    print(q,file=sys.stderr)
     connect = MySQLdb.connect(
-    user='noshiba',
-    passwd='shibano',
-    host='Tina',
-    db='timecard')
+        user='noshiba',
+        passwd='shibano',
+        host='25.76.165.90',
+        db='timecard',
+        charset='utf8',
+        use_unicode=True)
     cur = connect.cursor()
     cur.execute("select name from name_table where id = 'noshiba1';")
 
-except MySQLdb.Error as e:
-    response = { "res" : "エラーが出てるんだよはよ直せ" }
-    print('Content-Type: text/json; charset=utf-8\r\n')
-    print(json.JSONEncoder().encode(response))
+    return cur.fetchone()
+
+    cur.close()
+    connect.commit()
+    connect.close()
 
 mode = params["mode"]
-
-rows = cur.fetchone()
 
 #mode0:始業終業ボタン関連 mode1:管理者かどうか mode2:ほかの人のデータ見る
 if(mode == 0):#始業終業ボタン関連
@@ -56,12 +58,13 @@ if(mode == 0):#始業終業ボタン関連
     minute = params["minute"]
     button = params["button"]
 
-    sentence = rows
+    rows = query()
+    sentence = rows[0]
 
     if button == 0:
-        response = { "res" : "出勤しました" + str(sentence[0].encode("utf-8")) }
+        response = { "res" : "出勤しました" + sentence }
     else:
-        response = { "res" : "退勤しました" + str(sentence) }
+        response = { "res" : "退勤しました" + sentence }
 
     print('Content-Type: text/json; charset=utf-8\r\n')
     print(json.JSONEncoder().encode(response))
@@ -76,7 +79,3 @@ else:#ほかの人のデータ検索
     inpid = params["id"]
 
     #なんかいろいろ検索できるように
-
-connect.commit()
-
-connect.close()
