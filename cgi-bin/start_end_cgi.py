@@ -27,23 +27,15 @@ cgitb.enable()
 data = sys.stdin.readline()#leadline()?
 params = json.loads(data)
 
-def query():
-    print(q,file=sys.stderr)
-    connect = MySQLdb.connect(
+connect = MySQLdb.connect(
         user='noshiba',
         passwd='shibano',
         host='25.76.165.90',
         db='timecard',
         charset='utf8',
         use_unicode=True)
-    cur = connect.cursor()
-    cur.execute("select name from name_table where id = 'noshiba1';")
 
-    return cur.fetchone()
-
-    cur.close()
-    connect.commit()
-    connect.close()
+cur = connect.cursor()
 
 mode = params["mode"]
 
@@ -58,13 +50,26 @@ if(mode == 0):#始業終業ボタン関連
     minute = params["minute"]
     button = params["button"]
 
-    rows = query()
-    sentence = rows[0]
+    cur.execute("select name from name_table where id = '" + inpid +"' and pw = '" + inppw + "';")
+    rows = cur.fetchone()
+    if rows is None:
+        response = { "res" : "ID,PWが違います"}
+        print("error desuyo",sys.stderr)
+        print('Content-Type: text/json; charset=utf-8\r\n')
+        print(json.JSONEncoder().encode(response))
+        sys.exit()
+    else:
+        sentence = rows[0]
 
     if button == 0:
-        response = { "res" : "出勤しました" + sentence }
+        response = { "res" : sentence + "さんが出勤しました" }
+        cur.execute("insert into history_table (id, date, start) values ('" +  inpid + "', '" +  str(year) + "/" + str(month) + "/" + str(day) + "', '" + str(hour) + ":" + str(minute) + "');")
     else:
-        response = { "res" : "退勤しました" + sentence }
+        response = { "res" : sentence + "さんが退勤しました" }
+        cur.execute("update history_table set end='" + str(hour) + ":" + str(minute) + "' where id='" + inpid + "';")
+
+    connect.commit()
+    rows = cur.fetchone()
 
     print('Content-Type: text/json; charset=utf-8\r\n')
     print(json.JSONEncoder().encode(response))
@@ -79,3 +84,7 @@ else:#ほかの人のデータ検索
     inpid = params["id"]
 
     #なんかいろいろ検索できるように
+
+cur.close()
+connect.commit()
+connect.close()
